@@ -1,6 +1,3 @@
-// Create variables targetting the relevant DOM elements here 👇
-
-
 var coverImages = [
   "./assets/bluebrocade.jpg",
   "./assets/dance.jpg",
@@ -94,42 +91,6 @@ var descriptors = [
   "melancholy"
 ];
 
-// We've provided a few variables below
-var savedCovers = [];
-var currentCover;
-
-var makeMyBookButton = document.querySelector('.create-new-book-button');
-
-var uniqueCoverInput = null;
-
-
-makeMyBookButton.addEventListener('click', function(event){
-  var userCoverURL = document.querySelector('#cover');
-  var userTitle = document.querySelector('#title');
-  var userDescriptor1 = document.querySelector('#descriptor1');
-  var userDescriptor2 = document.querySelector('#descriptor2');
-
-  uniqueCoverInput = new UniqueCover(userCoverURL.value, userTitle.value, userDescriptor1.value, userDescriptor2.value);
-  console.log(uniqueCoverInput);
-  toggleToHome();
-  form.classList.add('hidden');
-  document.querySelector('.cover-image').src = uniqueCoverInput.coverURL;
-  document.querySelector('.cover-title').innerText = uniqueCoverInput.title;
-  document.querySelector('.tagline-1').innerText = uniqueCoverInput.descriptor1;
-  document.querySelector('.tagline-2').innerText = uniqueCoverInput.descriptor2;
-  event.preventDefault();
-});
-
-class UniqueCover {
-  constructor(userInputURL, userInputTitle, userDescriptor1, userDescriptor2){
-    this.coverURL = userInputURL;
-    this.title = userInputTitle;
-    this.descriptor1 = userDescriptor1;
-    this.descriptor2 = userDescriptor2;
-  }
-};
-
-
 var randomCoverButton = document.querySelector('.random-cover-button');
 var makeYourOwnCoverButton = document.querySelector('.make-new-button');
 var homeView = document.querySelector('.home-view');
@@ -140,10 +101,32 @@ var saveCoverButton = document.querySelector('.save-cover-button');
 var homeButton = document.querySelector('.home-button');
 var viewSavedCoversButton = document.querySelector('.view-saved-button');
 var savedCoversSection = document.querySelector('.saved-covers-section')
+var makeMyBookButton = document.querySelector('.create-new-book-button');
+var savedCovers = [];
+var uniqueCoverInputs = null;
 
-// Add your event listeners here 👇
-randomCoverButton.addEventListener('click',function() {
-  generateCover(coverImages, coverTitles, descriptors)
+class UniqueCover {
+  constructor(userInputURL, userInputTitle, userDescriptor1, userDescriptor2){
+    this.coverURL = userInputURL;
+    this.title = userInputTitle;
+    this.descriptor1 = userDescriptor1;
+    this.descriptor2 = userDescriptor2;
+  }
+};
+
+makeMyBookButton.addEventListener('click', function(event){
+  var userCoverURL = document.querySelector('#cover');
+  var userTitle = document.querySelector('#title');
+  var userDescriptor1 = document.querySelector('#descriptor1');
+  var userDescriptor2 = document.querySelector('#descriptor2');
+  uniqueCoverInputs = new UniqueCover(userCoverURL.value, userTitle.value, userDescriptor1.value, userDescriptor2.value);
+  toggleToHome();
+  form.classList.add('hidden');
+  document.querySelector('.cover-image').src = uniqueCoverInputs.coverURL;
+  document.querySelector('.cover-title').innerText = uniqueCoverInputs.title;
+  document.querySelector('.tagline-1').innerText = uniqueCoverInputs.descriptor1;
+  document.querySelector('.tagline-2').innerText = uniqueCoverInputs.descriptor2;
+  event.preventDefault();
 });
 
 makeYourOwnCoverButton.addEventListener('click', toggleToForm);
@@ -152,7 +135,10 @@ homeButton.addEventListener('click', toggleToHome);
 
 saveCoverButton.addEventListener('click', function() {
   saveUniqueCover(savedCovers);
+});
 
+randomCoverButton.addEventListener('click',function() {
+  generateCover(coverImages, coverTitles, descriptors)
 });
 
 viewSavedCoversButton.addEventListener('click', function(event) {
@@ -162,21 +148,20 @@ viewSavedCoversButton.addEventListener('click', function(event) {
 
 function viewSavedCovers() {
   savedCoversView.classList.remove('hidden');
-  // savedCoversSection.classList.remove('hidden');
   homeView.classList.add('hidden');
   form.classList.add('hidden');
   viewMiniCovers();
-}
+};
 
 function viewMiniCovers() {
   savedCoversSection.innerHTML = '';
   for(var i =0; i < savedCovers.length; i++) {
     var coverContainer = document.createElement('div');
-    coverContainer.setAttribute('class', 'mini-cover');
     var coverElements = `<img class="cover-title" src=${savedCovers[i].coverURL}>
-    <h2 class="cover-title">${savedCovers[i].title}</h2>
-    <h3 class="tagline">A tale of <span class="tagline-1">${savedCovers[i].descriptor1}</span> and <span class="tagline-2">${savedCovers[i].descriptor2}</span></h3>
-    <img class="overlay" src="./assets/overlay.png">`;
+                         <h2 class="cover-title">${savedCovers[i].title}</h2>
+                         <h3 class="tagline">A tale of <span class="tagline-1">${savedCovers[i].descriptor1}</span> and <span class="tagline-2">${savedCovers[i].descriptor2}</span></h3>
+                         <img class="overlay" src="./assets/overlay.png">`;
+    coverContainer.setAttribute('class', 'mini-cover');
     coverContainer.innerHTML = coverElements;
     savedCoversSection.appendChild(coverContainer);
     };
@@ -184,13 +169,12 @@ function viewMiniCovers() {
 
 function saveUniqueCover(savedCoversList) {
   for(var i = 0; i <= savedCoversList.length; i++) {
-    if(savedCoversList.includes(uniqueCoverInput) === false) {
-      savedCoversList.push(uniqueCoverInput);
-    }
+    if(savedCoversList.includes(uniqueCoverInputs) === false) {
+      savedCoversList.push(uniqueCoverInputs);
+    };
   }
 };
 
-// Create your event handlers and other functions here 👇
 function toggleToForm(){
   homeView.classList.add('hidden');
   form.classList.remove('hidden');
@@ -203,7 +187,7 @@ function toggleToForm(){
 function displaySavedCovers() {
   savedCoversView.classList.remove('hidden');
   form.classList.add('hidden');
-}
+};
 
 function toggleToHome() {
   homeView.classList.remove('hidden');
@@ -211,7 +195,7 @@ function toggleToHome() {
   showNewRandomCoverButton.classList.remove('hidden');
   homeButton.classList.add('hidden');
   saveCoverButton.classList.remove('hidden');
-}
+};
 
 function generateCover(listOfImages, listOfTitles, listOfDescriptors) {
   var randomImage = listOfImages[Math.floor(Math.random() * listOfImages.length)];
@@ -219,14 +203,10 @@ function generateCover(listOfImages, listOfTitles, listOfDescriptors) {
   var randomDescriptor1 = listOfDescriptors[Math.floor(Math.random() * listOfDescriptors.length)];
   var randomDescriptor2 = listOfDescriptors[Math.floor(Math.random() * listOfDescriptors.length)];
 
-
     document.querySelector('.cover-image').src = randomImage;
     document.querySelector('.cover-title').innerText = randomTitle;
     document.querySelector('.tagline-1').innerText = randomDescriptor1;
     document.querySelector('.tagline-2').innerText = randomDescriptor2;
-}
-
+};
 
 generateCover(coverImages, coverTitles, descriptors);
-
-// ..........................................................................
