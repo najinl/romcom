@@ -1,96 +1,3 @@
-var coverImages = [
-  "./assets/bluebrocade.jpg",
-  "./assets/dance.jpg",
-  "./assets/embrace.png",
-  "./assets/fire.png",
-  "./assets/frock.png",
-  "./assets/glorious.jpg",
-  "./assets/golden.jpg",
-  "./assets/maskedmeeting.jpg",
-  "./assets/masquerade.jpg",
-  "./assets/moonlitmeadow.jpg",
-  "./assets/office.png",
-  "./assets/picnic.jpg",
-  "./assets/pirate.jpg",
-  "./assets/prairie.jpg",
-  "./assets/redrenaissance.jpg",
-  "./assets/regency.jpg",
-  "./assets/ribbons.jpg",
-  "./assets/roses.jpg",
-  "./assets/ruffles.jpg",
-  "./assets/scroll.jpg",
-  "./assets/shine.png",
-  "./assets/smolder.png",
-  "./assets/snow.jpg",
-  "./assets/sparkles.jpg",
-  "./assets/stripes.png",
-  "./assets/wildwest.jpg",
-  "./assets/windswept.jpg"
-];
-
-var coverTitles = [
-  "Passionate Moonlight",
-  "Love's Misery",
-  "Roses and Flame",
-  "Innocent Roses",
-  "Silk and Sense",
-  "Hearts Aflame",
-  "Fiery Passion",
-  "Stolen Hearts",
-  "Secrets and Silk",
-  "Dreams of Fire",
-  "Lovers and Enemies",
-  "Passion's Embrace",
-  "Harbinger by Moonlight",
-  "Rouge Red",
-  "Moonlit Mysteries",
-  "Crimson Roses",
-  "Destiny's Fires",
-  "Proposals and Passion",
-  "Silk Wedding",
-  "Masked Seduction",
-  "Crimson Masquerade",
-  "Stolen Rubies",
-  "Emerald Eyes",
-  "Sapphire Skies",
-  "Opal Passions"
-];
-
-var descriptors = [
-  "passion",
-  "glory",
-  "romance",
-  "woe",
-  "sorrow",
-  "pain",
-  "ardor",
-  "devotion",
-  "excitement",
-  "fervor",
-  "rage",
-  "spirit",
-  "zeal",
-  "ecstasy",
-  "fire",
-  "storms",
-  "tempests",
-  "rapture",
-  "ire",
-  "jealousy",
-  "exhilaration",
-  "bliss",
-  "enchantment",
-  "paradise",
-  "calamity",
-  "disaster",
-  "heartache",
-  "misfortune",
-  "agony",
-  "curses",
-  "blessings",
-  "melancholy"
-];
-
 var randomCoverButton = document.querySelector('.random-cover-button');
 var makeYourOwnCoverButton = document.querySelector('.make-new-button');
 var homeView = document.querySelector('.home-view');
@@ -103,7 +10,7 @@ var viewSavedCoversButton = document.querySelector('.view-saved-button');
 var savedCoversSection = document.querySelector('.saved-covers-section')
 var makeMyBookButton = document.querySelector('.create-new-book-button');
 var savedCovers = [];
-var uniqueCoverInputs = null;
+var uniqueCoverInput = null;
 
 class UniqueCover {
   constructor(userInputURL, userInputTitle, userDescriptor1, userDescriptor2){
@@ -119,15 +26,17 @@ makeMyBookButton.addEventListener('click', function(event){
   var userTitle = document.querySelector('#title');
   var userDescriptor1 = document.querySelector('#descriptor1');
   var userDescriptor2 = document.querySelector('#descriptor2');
-  uniqueCoverInputs = new UniqueCover(userCoverURL.value, userTitle.value, userDescriptor1.value, userDescriptor2.value);
+  uniqueCoverInput = new UniqueCover(userCoverURL.value, userTitle.value, userDescriptor1.value, userDescriptor2.value);
   toggleToHome();
   form.classList.add('hidden');
-  document.querySelector('.cover-image').src = uniqueCoverInputs.coverURL;
-  document.querySelector('.cover-title').innerText = uniqueCoverInputs.title;
-  document.querySelector('.tagline-1').innerText = uniqueCoverInputs.descriptor1;
-  document.querySelector('.tagline-2').innerText = uniqueCoverInputs.descriptor2;
+  document.querySelector('.cover-image').src = uniqueCoverInput.coverURL;
+  document.querySelector('.cover-title').innerText = uniqueCoverInput.title;
+  document.querySelector('.tagline-1').innerText = uniqueCoverInput.descriptor1;
+  document.querySelector('.tagline-2').innerText = uniqueCoverInput.descriptor2;
   event.preventDefault();
 });
+
+window.addEventListener('load', generateCover);
 
 makeYourOwnCoverButton.addEventListener('click', toggleToForm);
 
@@ -138,7 +47,7 @@ saveCoverButton.addEventListener('click', function() {
 });
 
 randomCoverButton.addEventListener('click',function() {
-  generateCover(coverImages, coverTitles, descriptors)
+  generateCover(covers, titles, descriptors)
 });
 
 viewSavedCoversButton.addEventListener('click', function(event) {
@@ -169,8 +78,8 @@ function viewMiniCovers() {
 
 function saveUniqueCover(savedCoversList) {
   for(var i = 0; i <= savedCoversList.length; i++) {
-    if(savedCoversList.includes(uniqueCoverInputs) === false) {
-      savedCoversList.push(uniqueCoverInputs);
+    if(savedCoversList.includes(uniqueCoverInput) === false) {
+      savedCoversList.push(uniqueCoverInput);
     };
   }
 };
@@ -197,16 +106,14 @@ function toggleToHome() {
   saveCoverButton.classList.remove('hidden');
 };
 
-function generateCover(listOfImages, listOfTitles, listOfDescriptors) {
-  var randomImage = listOfImages[Math.floor(Math.random() * listOfImages.length)];
-  var randomTitle = listOfTitles[Math.floor(Math.random() * listOfTitles.length)];
-  var randomDescriptor1 = listOfDescriptors[Math.floor(Math.random() * listOfDescriptors.length)];
-  var randomDescriptor2 = listOfDescriptors[Math.floor(Math.random() * listOfDescriptors.length)];
-
-    document.querySelector('.cover-image').src = randomImage;
-    document.querySelector('.cover-title').innerText = randomTitle;
-    document.querySelector('.tagline-1').innerText = randomDescriptor1;
-    document.querySelector('.tagline-2').innerText = randomDescriptor2;
+function getRandomIndex(array) {
+  var randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
 };
 
-generateCover(coverImages, coverTitles, descriptors);
+function generateCover() {
+  document.querySelector('.cover-image').src = getRandomIndex(covers);
+  document.querySelector('.cover-title').innerText = getRandomIndex(titles);
+  document.querySelector('.tagline-1').innerText = getRandomIndex(descriptors);
+  document.querySelector('.tagline-2').innerText = getRandomIndex(descriptors);
+};
